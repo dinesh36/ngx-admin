@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.config.json",
     "start:hmr": "ng serve --hmr",
     "start:aot": "ng serve --aot",
     "build": "rimraf dist && ng build",
