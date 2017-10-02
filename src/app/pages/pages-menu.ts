@@ -7,11 +7,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/dashboard',
     home: true,
   },
-  // {
-  //   title: 'FEATURES',
-  //   group: true,
-  // },
-  /*{
+  {
+    title: 'FEATURES',
+    group: true,
+  },
+  {
     title: 'UI Features',
     icon: 'nb-keypad',
     link: '/pages/ui-features',
@@ -122,18 +122,22 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/pages/editors/ckeditor',
       },
     ],
-  },*/
+  },
   {
-    title: 'Modules',
+    title: 'Tables',
     icon: 'nb-tables',
     children: [
       {
-        title: 'Users',
+        title: 'Smart Table',
         link: '/pages/tables/smart-table',
+      },
+      {
+        title: 'Users',
+        link: '/pages/tables/users',
       },
     ],
   },
-  /*{
+  {
     title: 'Auth',
     icon: 'nb-locked',
     children: [
@@ -154,5 +158,5 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: '/auth/reset-password',
       },
     ],
-  },*/
+  },
 ];
