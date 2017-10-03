@@ -20,21 +20,19 @@ export class UsersComponent {
       addButtonContent: '<i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
+      confirmCreate:true
     },
     edit: {
       editButtonContent: '<i class="nb-edit"></i>',
       saveButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
+      confirmSave:true
     },
     delete: {
       deleteButtonContent: '<i class="nb-trash"></i>',
       confirmDelete: true,
     },
     columns: {
-      id: {
-        title: 'ID',
-        type: 'number',
-      },
       firstName: {
         title: 'First Name',
         type: 'string',
@@ -43,8 +41,8 @@ export class UsersComponent {
         title: 'Last Name',
         type: 'string',
       },
-      username: {
-        title: 'Username',
+      userName: {
+        title: 'User Name',
         type: 'string',
       },
       email: {
@@ -66,7 +64,7 @@ export class UsersComponent {
 
   getData(){
     this.userService.getUsers()
-      .subscribe((users)=>this.source.load(users))
+      .subscribe((users)=>this.source.load(users.rows))
   }
 
   deleteUser(event){
@@ -75,6 +73,9 @@ export class UsersComponent {
         .subscribe(()=>{
           event.confirm.resolve();
           this.getData();
+        },()=>{
+          alert('Error in deleting the user.');
+          event.confirm.reject()
         })
     } else {
       event.confirm.reject();
@@ -82,12 +83,23 @@ export class UsersComponent {
   }
 
   createUser(event){
-    debugger;
-    this.userService.createUser(event.data)
+    this.userService.createUser(event.newData)
       .subscribe(()=>{
         event.confirm.resolve();
         this.getData();
       },()=>{
+        alert('Error in creating the user.');
+        event.confirm.reject();
+      })
+  }
+
+  updateUser(event){
+    this.userService.updateUser(event.newData)
+      .subscribe(()=>{
+        event.confirm.resolve();
+        this.getData();
+      },()=>{
+        alert('Error in updating the user.');
         event.confirm.reject();
       })
   }

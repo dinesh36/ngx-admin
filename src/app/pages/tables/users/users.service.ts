@@ -14,19 +14,19 @@ export class UserService{
     return this.dataService.callAPI({url:'/api/users'});
   }
 
-  createUser(data){
+  createUser(body){
     return this.dataService.callAPI({
       url:'/api/users',
       method:'post',
-      data:data
+      body:body
     });
   }
 
-  updateUser(id,data){
+  updateUser(body){
     return this.dataService.callAPI({
-      url:'/api/users/'+id,
+      url:'/api/users/'+body.id,
       method:'put',
-      data:data
+      body:body
     });
   }
 
