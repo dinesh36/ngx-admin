@@ -2,7 +2,7 @@
  * Created by dinesh on 2/10/17.
  */
 import {Injectable} from "@angular/core";
-import {DataService} from "../../../@core/data/data.service";
+import {DataService} from "../data.service";
 
 @Injectable()
 export class UserService{
@@ -10,8 +10,8 @@ export class UserService{
 
   }
 
-  getUsers(){
-    return this.dataService.callAPI({url:'/api/users'});
+  getUsers(searchQuery={}){
+    return this.dataService.callAPI({url:'/api/users',search:searchQuery});
   }
 
   createUser(body){

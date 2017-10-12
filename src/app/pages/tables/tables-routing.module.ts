@@ -5,6 +5,7 @@ import { TablesComponent } from './tables.component';
 import { SmartTableComponent } from './smart-table/smart-table.component';
 import {UsersComponent} from "./users/users.component";
 import {UserService} from "./users/users.service";
+import {DataService} from "./data.service";
 
 const routes: Routes = [{
   path: '',
@@ -22,7 +23,7 @@ const routes: Routes = [{
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers:[UserService]
+  providers:[UserService,DataService]
 })
 export class TablesRoutingModule { }
 

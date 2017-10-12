@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import {UserService} from "./users.service";
+import {Observable, Subject} from "rxjs/Rx";
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
   selector: 'ngx-smart-table',
@@ -13,8 +17,8 @@ import {UserService} from "./users.service";
     }
   `],
 })
-export class UsersComponent {
-
+export class UsersComponent implements OnInit{
+  private filterTerms = [];
   settings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
@@ -55,16 +59,55 @@ export class UsersComponent {
       },
     },
   };
-
+  searchQuery:any = {};
   source: LocalDataSource = new LocalDataSource();
+  pendingRequest:any;
 
   constructor(private service: SmartTableService,private userService:UserService) {
     this.getData();
+    console.log('changed3');
+  }
+
+  ngOnInit(){
+    setTimeout(()=>{
+      let index = 0;
+      for (let key in this.settings.columns){
+        let i = index;
+        this.filterTerms.push(new Subject<string>());
+        Observable.fromEvent(document.getElementsByTagName('input-filter')[index], 'keyup')
+          .subscribe((data:any)=>{
+            this.filterTerms[i].next(data.target.value);
+          });
+        this.filterTerms[i]
+          .debounceTime(300) //wait for 300 for next call
+          .distinctUntilChanged() // do not call if data is unchanged
+          .subscribe(term => {
+            if(!term){
+              delete this.searchQuery[key]; //remove the search from query string
+            } else {
+              this.searchQuery[key] = term; //add term in search string
+            }
+            this.getData();
+          });
+        index++;
+      }
+    },2000);
+  }
+
+  filterData(){
+
   }
 
   getData(){
-    this.userService.getUsers()
-      .subscribe((users)=>this.source.load(users.rows))
+    if(this.pendingRequest){
+      this.pendingRequest.unsubscribe();
+      this.pendingRequest = false;
+    }
+    this.pendingRequest = this.userService.getUsers(this.searchQuery)
+      .subscribe((users)=>{
+        this.source.load(users.rows);
+        this.pendingRequest = false;
+      });
   }
 
   deleteUser(event){

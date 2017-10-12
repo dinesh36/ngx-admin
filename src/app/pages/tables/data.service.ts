@@ -28,8 +28,8 @@ export class DataService {
   callAPI(options: any) {
     options.showSuccessMessage = _.isUndefined(options.showSuccessMessage) ? true : options.showSuccessMessage;
     options.showErrorMessage = _.isUndefined(options.showErrorMessage) ? true : options.showErrorMessage;
-    // let searchParams:URLSearchParams = new URLSearchParams();
-    // _.each(options.search,(value,key)=>searchParams.set(key,value));
+    let searchParams:URLSearchParams = new URLSearchParams();
+    _.each(options.search,(value,key)=>searchParams.set(key,value));
     return Observable.create((subscriber) => {
       this.setLoader(true);
       this.http
@@ -37,7 +37,7 @@ export class DataService {
           body: options.body,
           method :(options.method || 'get'),
           header: this.headers,
-          // search:searchParams
+          search:searchParams
         })
         .toPromise()
         .then((res:any) => {
