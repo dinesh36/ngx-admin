@@ -9,5 +9,6 @@
                      (createConfirm)="createUser($event)"
                      (editConfirm)="updateUser($event)">
     </ng2-smart-table>
+    <table-paging [pageData]="pageData" (pageChanged)="getData()"></table-paging>
   </nb-card-body>
 </nb-card>

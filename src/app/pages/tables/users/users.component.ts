@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 
 import { SmartTableService } from '../../../@core/data/smart-table.service';
@@ -7,6 +7,7 @@ import {Observable, Subject} from "rxjs/Rx";
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import {TablePagingComponent} from "../table-paging.component";
 
 @Component({
   selector: 'ngx-smart-table',
@@ -19,6 +20,12 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class UsersComponent implements OnInit{
   private filterTerms = [];
+  private rowsPerPage = 10;
+  @ViewChild(TablePagingComponent) pagingComponent: TablePagingComponent;
+  pageData:any = {
+    totalPages:0,
+    currentPage:1
+  };
   settings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
@@ -63,20 +70,20 @@ export class UsersComponent implements OnInit{
   source: LocalDataSource = new LocalDataSource();
   pendingRequest:any;
 
-  constructor(private service: SmartTableService,private userService:UserService) {
+  constructor(private userService:UserService) {
     this.getData();
-    console.log('changed3');
   }
 
   ngOnInit(){
+    //wait to render the filter inputs
     setTimeout(()=>{
       let index = 0;
       for (let key in this.settings.columns){
         let i = index;
         this.filterTerms.push(new Subject<string>());
         Observable.fromEvent(document.getElementsByTagName('input-filter')[index], 'keyup')
-          .subscribe((data:any)=>{
-            this.filterTerms[i].next(data.target.value);
+          .subscribe((event:any)=>{
+            this.filterTerms[i].next(event.target.value);
           });
         this.filterTerms[i]
           .debounceTime(300) //wait for 300 for next call
@@ -94,19 +101,19 @@ export class UsersComponent implements OnInit{
     },2000);
   }
 
-  filterData(){
-
-  }
-
   getData(){
     if(this.pendingRequest){
       this.pendingRequest.unsubscribe();
       this.pendingRequest = false;
     }
+    this.searchQuery.page = this.pageData.currentPage;
+    this.searchQuery.rows = this.rowsPerPage;
     this.pendingRequest = this.userService.getUsers(this.searchQuery)
       .subscribe((users)=>{
         this.source.load(users.rows);
+        this.pageData.totalPages = Math.ceil(users.count/this.rowsPerPage);
         this.pendingRequest = false;
+        this.pagingComponent.renderPages();
       });
   }
 
