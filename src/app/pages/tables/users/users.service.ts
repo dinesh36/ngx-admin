@@ -1,14 +1,9 @@
-/**
- * Created by dinesh on 2/10/17.
- */
 import {Injectable} from "@angular/core";
 import {DataService} from "../data.service";
 
 @Injectable()
 export class UserService{
-  constructor(private dataService:DataService){
-
-  }
+  constructor(private dataService:DataService){}
 
   getUsers(searchQuery={}){
     return this.dataService.callAPI({url:'/api/users',search:searchQuery});

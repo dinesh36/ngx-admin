@@ -1,7 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-
-import { SmartTableService } from '../../../@core/data/smart-table.service';
 import {UserService} from "./users.service";
 import {Observable, Subject} from "rxjs/Rx";
 import 'rxjs/add/operator/catch';
